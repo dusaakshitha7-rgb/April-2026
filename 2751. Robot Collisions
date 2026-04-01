@@ -1,0 +1,27 @@
+class Solution:
+    def survivedRobotsHealths(self, positions, healths, directions):
+        robots = sorted(zip(positions, healths, directions, range(len(positions))))
+        stack = []
+        res = [0] * len(positions)
+
+        for pos, health, direction, idx in robots:
+            if direction == 'R':
+                stack.append([health, idx])
+            else:
+                while stack and health > 0:
+                    if stack[-1][0] < health:
+                        health -= 1
+                        stack.pop()
+                    elif stack[-1][0] == health:
+                        stack.pop()
+                        health = 0
+                        break
+                    else:
+                        stack[-1][0] -= 1
+                        health = 0
+                        break
+                if health > 0:
+                    res[idx] = health
+        for health, idx in stack:
+            res[idx] = health
+        return [x for x in res if x > 0]
